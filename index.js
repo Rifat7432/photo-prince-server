@@ -20,7 +20,9 @@ const client = new MongoClient(uri, {
 });
 const run = async () => {
   try {
-    const servicesCollection = client.db("Assignment-11").collection("services");
+    const servicesCollection = client
+      .db("Assignment-11")
+      .collection("services");
     app.get("/services/3", async (req, res) => {
       const query = {};
       const cursor = servicesCollection.find(query);
@@ -29,6 +31,13 @@ const run = async () => {
     });
     app.get("/services", async (req, res) => {
       const query = {};
+      const cursor = servicesCollection.find(query);
+      const services = await cursor.toArray();
+      res.send(services);
+    });
+    app.get("/services/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
       const cursor = servicesCollection.find(query);
       const services = await cursor.toArray();
       res.send(services);
