@@ -65,7 +65,15 @@ const run = async () => {
 
       res.send(reviews);
     });
-  
+    app.get("/userReview/:emailId", async (req, res) => {
+      const email = req.params.emailId;
+
+      const query = { email: email };
+      const cursor = reviewCollection.find(query);
+      const reviews = await cursor.toArray();
+
+      res.send(reviews);
+    });
   } finally {
   }
 };
