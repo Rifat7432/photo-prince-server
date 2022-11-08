@@ -23,11 +23,17 @@ const run = async () => {
     const servicesCollection = client
       .db("Assignment-11")
       .collection("services");
+    const reviewCollection = client.db("Assignment-11").collection("reviews");
+    // services
     app.get("/services/3", async (req, res) => {
       const query = {};
       const cursor = servicesCollection.find(query);
-      const services = await cursor.limit(3).toArray();
-      res.send(services);
+      const services = (await cursor.toArray()).reverse();
+      const lastServices = services.slice(0, 3);
+
+      console.log(lastServices);
+
+      res.send(lastServices);
     });
     app.get("/services", async (req, res) => {
       const query = {};
@@ -42,6 +48,10 @@ const run = async () => {
       const services = await cursor.toArray();
       res.send(services);
     });
+
+    // review
+
+
   } finally {
   }
 };
