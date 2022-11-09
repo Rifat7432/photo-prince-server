@@ -63,7 +63,12 @@ const run = async () => {
       );
       res.send(result);
     });
-
+    app.post("/services", async (req, res) => {
+      const services = req.body;
+      const result = await servicesCollection.insertOne(services);
+      res.send(result);
+      console.log(services);
+    });
     // review
 
     app.post("/review", async (req, res) => {
