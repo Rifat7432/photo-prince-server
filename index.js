@@ -30,9 +30,6 @@ const run = async () => {
       const cursor = servicesCollection.find(query);
       const services = (await cursor.toArray()).reverse();
       const lastServices = services.slice(0, 3);
-
-      console.log(lastServices);
-
       res.send(lastServices);
     });
     app.get("/services", async (req, res) => {
@@ -41,6 +38,7 @@ const run = async () => {
       const services = await cursor.toArray();
       res.send(services);
     });
+
     app.get("/services/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
@@ -50,7 +48,7 @@ const run = async () => {
     });
     app.patch("/services/:id", async (req, res) => {
       const servicesId = req.params.id;
-      const query = {_id :ObjectId(servicesId)};
+      const query = { _id: ObjectId(servicesId) };
       const ratings = req.body;
       const option = { upsert: true };
       const updateDoc = {
@@ -72,6 +70,7 @@ const run = async () => {
       const review = req.body;
       const result = await reviewCollection.insertOne(review);
       res.send(result);
+      console.log(review);
     });
     app.get("/serviceReview/:serviceId", async (req, res) => {
       const id = req.params.serviceId;
@@ -90,6 +89,20 @@ const run = async () => {
       const reviews = await cursor.toArray();
 
       res.send(reviews);
+    });
+    app.patch("/review/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const ratings = req.body;
+      const option = { upsert: true };
+      const updateDoc = {
+        $set: {
+          rating: ratings?.rating,
+          massage: ratings?.massage,
+        },
+      };
+      const result = await reviewCollection.updateOne(query, updateDoc, option);
+      res.send(result);
     });
   } finally {
   }
