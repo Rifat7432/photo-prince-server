@@ -31,12 +31,14 @@ const run = async () => {
       const services = (await cursor.toArray()).reverse();
       const lastServices = services.slice(0, 3);
       res.send(lastServices);
+      console.log(lastServices)
     });
     app.get("/services", async (req, res) => {
       const query = {};
       const cursor = servicesCollection.find(query);
       const services = await cursor.toArray();
       res.send(services);
+      console.log(services)
     });
 
     app.get("/services/:id", async (req, res) => {
@@ -69,7 +71,7 @@ const run = async () => {
       res.send(result);
       console.log(services);
     });
-    // review
+    // // review
 
     app.post("/review", async (req, res) => {
       const review = req.body;
@@ -83,8 +85,9 @@ const run = async () => {
       const query = { service: id };
       const cursor = reviewCollection.find(query);
       const reviews = await cursor.toArray();
-
-      res.send(reviews);
+      const reviewsByTime = reviews.sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime()).reverse()
+      
+      res.send(reviewsByTime);
     });
     app.get("/userReview/:emailId", async (req, res) => {
       const email = req.params.emailId;
@@ -92,8 +95,10 @@ const run = async () => {
       const query = { email: email };
       const cursor = reviewCollection.find(query);
       const reviews = await cursor.toArray();
+      const reviewsByTime = reviews.sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime()).reverse()
+      
+      res.send(reviewsByTime);
 
-      res.send(reviews);
     });
     app.patch("/review/:id", async (req, res) => {
       const id = req.params.id;
@@ -109,6 +114,12 @@ const run = async () => {
       const result = await reviewCollection.updateOne(query, updateDoc, option);
       res.send(result);
     });
+    app.delete('/review/:id',async(req,res)=>{
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await reviewCollection.deleteOne(query);
+      res.send(result);
+    })
   } finally {
   }
 };
