@@ -48,6 +48,23 @@ const run = async () => {
       const services = await cursor.toArray();
       res.send(services);
     });
+    app.patch("/services/:id", async (req, res) => {
+      const servicesId = req.params.id;
+      const query = {_id :ObjectId(servicesId)};
+      const ratings = req.body;
+      const option = { upsert: true };
+      const updateDoc = {
+        $set: {
+          rating: ratings?.rating,
+        },
+      };
+      const result = await servicesCollection.updateOne(
+        query,
+        updateDoc,
+        option
+      );
+      res.send(result);
+    });
 
     // review
 
